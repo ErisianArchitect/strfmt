@@ -23,17 +23,16 @@
 #[macro_export]
 macro_rules! strfmt {
     ($inst:expr, $($key:ident => $value:tt),*,) => {
-        strfmt!($inst, $($key => $value)*)
+        $crate::strfmt!($inst, $($key => $value)*)
     };
     ($inst:expr, $($values:tt),*,) => {
-        strfmt!($inst, $($values)*)
+        $crate::strfmt!($inst, $($values)*)
     };
     ($inst:expr,$($values:tt)*) =>({
-        use std::collections::HashMap;
-        use $crate::{DisplayStr,strfmt_builder};
-        let mut vars: HashMap<String, Box<dyn DisplayStr>> = HashMap::new();
-        strfmt_builder!(vars,$($values)*);
-        strfmt($inst,&vars)
+        let mut vars: std::collections::HashMap<String, Box<dyn $crate::DisplayStr>> =
+            std::collections::HashMap::new();
+        $crate::strfmt_builder!(vars,$($values)*);
+        $crate::strfmt($inst,&vars)
     });
 }
 
@@ -47,10 +46,10 @@ macro_rules! strfmt_builder {
     };
     ($vars:expr,$value:expr,$($values:tt)*) => {
         $vars.insert(stringify!($value).to_string(),Box::new($value));
-        strfmt_builder!($vars,$($values)*)
+        $crate::strfmt_builder!($vars,$($values)*)
     };
     ($vars:expr,$name:ident => $value:expr,$($values:tt)*) => {
         $vars.insert(stringify!($name).to_string(),Box::new($value));
-        strfmt_builder!($vars,$($values)*)
+        $crate::strfmt_builder!($vars,$($values)*)
     };
 }
